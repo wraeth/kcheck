@@ -32,7 +32,7 @@ Edit the config file `kcheck.conf` to add the kernel symbol names and their requ
 well documented, but in short, there are three sections: `[system]`, `[ternary]`, and `[string]`.
 
 Kernel symbols listed in the config file may be upper or lowercase, may keep or omit the prefix `CONFIG_`, and may
-specify valid values or none to default to "enabled" (`Y` or `N`).
+specify valid values or none to default to "enabled" (`Y` or `M`).
 
 ### [System]
 
