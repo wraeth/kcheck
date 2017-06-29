@@ -38,8 +38,7 @@ def main() -> int:
     log = logging.getLogger('main')
 
     if args.version:
-        print('kcheck - Kernel configuration checker version v'+kcheck.__version__)
-        print('  Created by', kcheck.__author__)
+        print('kcheck', kcheck.__version__)
         return 0
 
     if 'mode' in args:
