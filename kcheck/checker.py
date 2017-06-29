@@ -22,7 +22,8 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
     assert isinstance(kernel_config, str)
     log.debug('Module loaded - beginning kernel configuration check')
 
-    symbols = load_required_symbols(kcheck_config)
+    required_symbols = load_required_symbols(kcheck_config)
+    kernel_symbols = read_kernel_config(kernel_config)
     # TODO: put stuff here
     return 0
 
@@ -84,4 +85,63 @@ def load_required_symbols(config_file: str) -> dict:
             symbols[sym_name] = value
 
     log.info('Loaded %d kernel symbols to check' % len(symbols.keys()))
+    return symbols
+
+
+def read_kernel_config(kernel_config: str) -> dict:
+    """
+    Reads the specified kernel configuration into a dict.
+
+    :param kernel_config: path to kernel .config or config.gz
+    :return: dict(symbol: value)
+    """
+    assert isinstance(kernel_config, str)
+    log.info('Reading kernel config from %s' % kernel_config)
+
+    # we are but a simple python script - we only guess at what we see
+    if kernel_config.endswith('.gz'):
+        log.debug('Kernel file assumed to be gzipped based on file extension')
+        from gzip import open as myopen
+        mode = 'rt'
+    else:
+        myopen = open
+        mode = 'r'
+
+    try:
+        log.debug('Opening kernel config')
+        fh = myopen(kernel_config, mode=mode)
+    except FileNotFoundError as err:
+        log.critical('The kernel configuration file "%s" was not found!' % kernel_config)
+        log.exception(err)
+        raise
+
+    symbols = {}
+
+    log.debug('Processing config lines')
+    for line in fh.readlines():
+        # throw out the junk
+        if not 'CONFIG_' in line:
+            continue
+
+        line = line.strip()
+
+        # differentiate unset and set keys, add to dict
+        if 'is not set' in line:
+            sym = line[2:-11]
+            value = line[-10:].upper()
+        else:
+            sym, value = line.split('=')
+            value = value.upper()
+            if '"' in value:
+                value = value.replace('"', '')
+
+        assert isinstance(sym, str)
+        assert isinstance(value, str)
+
+        log.debug('Got symbol %s with value "%s"' % (sym, value))
+        symbols[sym] = value
+
+    fh.close()
+
+    log.info('Read %d symbols from kernel config' % len(symbols.keys()))
     return symbols
