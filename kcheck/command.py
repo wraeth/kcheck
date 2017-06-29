@@ -32,12 +32,12 @@ def main() -> int:
     parser.add_argument('-v', '--verbose', help='Output extra information', action='count', default=2)
     parser.add_argument('-V', '--version', help='Print version information and exit', action='store_true')
 
-    subparsers = parser.add_subparsers(help='commands')
-
-    gen_parser = subparsers.add_parser('genconfig', help='Generate config requirements from installed packages')
-    gen_parser.add_argument('-l', '--list', help='list available package manager integrations', action='store_true')
-    gen_parser.add_argument('-m', '--manager', help='Package manager', choices=kcheck.ALLOWED_PKGMGR, default='portage')
-    gen_parser.set_defaults(mode='genconfig')
+    # subparsers = parser.add_subparsers(help='commands')
+    #
+    # gen_parser = subparsers.add_parser('genconfig', help='Generate config requirements from installed packages')
+    # gen_parser.add_argument('-l', '--list', help='list available package manager integrations', action='store_true')
+    # gen_parser.add_argument('-m', '--manager', help='Package manager', choices=kcheck.ALLOWED_PKGMGR, default='portage')
+    # gen_parser.set_defaults(mode='genconfig')
     
     args = parser.parse_args()
 
