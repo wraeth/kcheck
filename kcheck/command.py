@@ -78,7 +78,7 @@ def main() -> int:
             except ImportError as exception:
                 log.critical("Unable to load module for package manager %s" % module)
                 log.exception(exception)
-                return 1
+                return -1
 
             return package_manager.generate_config(args)
 
@@ -93,7 +93,7 @@ def main() -> int:
             if args.logfile:
                 print('See the log file %s for more details' % args.logfile)
             print('Correct your config file and try running this again.')
-            return 2
+            return -2
 
 if __name__ == '__main__':
     main()
