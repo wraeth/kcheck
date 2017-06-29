@@ -12,15 +12,19 @@ def main() -> int:
     :return: integer for return code of command line
     """
 
-    import argparse
+    import configargparse
     import importlib
     import logging
     import platform
 
     import kcheck
 
-    parser = argparse.ArgumentParser(description='Kernel configuration check utility')
-    parser.add_argument('-c', '--config', help='kcheck config file', default='/etc/kcheck.conf')
+    parser = configargparse.ArgumentParser(
+        add_config_file_help=True,
+        default_config_files=['/etc/kcheck.conf'],
+        ignore_unknown_config_file_keys=True
+    )
+    parser.add_argument('-c', '--config', is_config_file=True, help='kcheck config file')
     parser.add_argument('-k', '--kernel', help='kernel config file', default='/usr/src/linux/.config')
     parser.add_argument('-l', '--logfile', help='file to write logging into')
     parser.add_argument('-v', '--verbose', help='Output extra information', action='count', default=2)
@@ -50,7 +54,7 @@ def main() -> int:
     # initialise logger and log basics
     log = logging.getLogger('main')
     log.info('kcheck %s' % kcheck.__version__)
-    log.debug('Called with arguments: %s' % str(args._get_kwargs()))
+    [log.debug(line) for line in parser.format_values().splitlines()]
 
     if args.version:
         print('kcheck %s (Python %s)' % (kcheck.__version__, platform.python_version()))
