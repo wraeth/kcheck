@@ -24,13 +24,14 @@ def main() -> int:
     parser = configargparse.ArgumentParser(
         add_config_file_help=True,
         default_config_files=['/etc/kcheck.conf'],
-        ignore_unknown_config_file_keys=True
+        ignore_unknown_config_file_keys=True,
+        formatter_class=lambda prog: configargparse.HelpFormatter(prog,max_help_position=35)
     )
-    parser.add_argument('-c', '--config', is_config_file=True, help='kcheck config file')
-    parser.add_argument('-k', '--kernel', help='kernel config file', default='/usr/src/linux/.config')
-    parser.add_argument('-l', '--logfile', help='file to write logging into')
-    parser.add_argument('-v', '--verbose', help='Output extra information', action='count', default=2)
-    parser.add_argument('-V', '--version', help='Print version information and exit', action='store_true')
+    parser.add_argument('--config', '-c', is_config_file=True, help='kcheck config file')
+    parser.add_argument('--kernel', '-k', help='kernel config file', default='/usr/src/linux/.config')
+    parser.add_argument('--logfile', '-l', help='file to write logging into')
+    parser.add_argument('--verbose', '-v', help='Output extra information', action='count', default=2)
+    parser.add_argument('--version', '-V', help='Print version information and exit', action='store_true')
 
     # subparsers = parser.add_subparsers(help='commands')
     #
