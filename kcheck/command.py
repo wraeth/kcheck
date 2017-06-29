@@ -27,7 +27,7 @@ def main() -> int:
         ignore_unknown_config_file_keys=True,
         formatter_class=lambda prog: configargparse.HelpFormatter(prog,max_help_position=35)
     )
-    parser.add_argument('--config', '-c', is_config_file=True, help='kcheck config file')
+    parser.add_argument('--config', '-c', is_config_file=True, required=True, help='kcheck config file')
     parser.add_argument('--kernel', '-k', help='kernel config file', default='/usr/src/linux/.config')
     parser.add_argument('--logfile', '-l', help='file to write logging into')
     parser.add_argument('--verbose', '-v', help='Output extra information', action='count', default=2)
