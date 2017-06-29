@@ -12,7 +12,7 @@ log = logging.getLogger('checker')
 
 def check_config(kcheck_config: str, kernel_config: str) -> int:
     """
-    Entry point for command line utility.
+    Load and compare symbols from config and kernel.
 
     :param kcheck_config: path to kcheck config with required kernel symbols
     :param kernel_config: path to kernel .config or config.gz to check
@@ -26,8 +26,50 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
 
     required_symbols = load_required_symbols(kcheck_config)
     kernel_symbols = read_kernel_config(kernel_config)
-    # TODO: put stuff here
-    return 0
+
+    incorrect_symbols = {}
+    missing_symbols = []
+
+    log.info('Comparing required kernel symbols')
+
+    for req_sym in required_symbols.keys():
+        req_val = required_symbols[req_sym]
+
+        try:
+            cur_val = kernel_symbols[req_sym]
+        except KeyError:
+            log.warning('Required symbol %s is not in kernel config' % req_sym)
+            missing_symbols.append(req_sym)
+            continue
+
+        if cur_val in req_val:
+            log.info('%s within allowed values' % req_sym)
+            continue
+        else:
+            log.warning('%s does not match value %s' % (req_sym, str(req_val)))
+            incorrect_symbols[req_sym] = [cur_val, req_val]
+            continue
+
+    log.info('%d keys with incorrect values' % len(incorrect_symbols.keys()))
+    log.info('%d keys not found in kernel config' % len(missing_symbols))
+
+    if len(incorrect_symbols.keys()) > 0:
+        print()
+        print('The following config symbols have incorrect values:')
+        for key in incorrect_symbols.keys():
+            cur, req = incorrect_symbols[key]
+            print('    %s set to %s when it should be %s' % (key, cur, req))
+    else:
+        print()
+        print('No required symbols have incorrect values!')
+
+    if len(missing_symbols) > 0:
+        print()
+        print('The following required keys were not found in the kernel config:')
+        for key in missing_symbols:
+            print('    %s' % key)
+
+    return len(incorrect_symbols.keys()) + len(missing_symbols)
 
 
 def load_required_symbols(config_file: str) -> dict:
