@@ -16,7 +16,6 @@ def main() -> int:
     import importlib
     import logging
     import platform
-    import sys
 
     import kcheck
 
@@ -57,7 +56,7 @@ def main() -> int:
             try:
                 package_manager = importlib.import_module(module)
             except ImportError:
-                print('Unable to load module for package manager', args.manager, file=sys.stderr)
+                log.critical("Unable to load module for package manager %s" % module)
                 return 1
 
             return package_manager.generate_config(args)
