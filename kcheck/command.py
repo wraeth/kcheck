@@ -45,13 +45,13 @@ def main() -> int:
     # logging output level
     log_level = 50 - (args.verbose * 10)
 
-    # format and handlers
-    handlers = [logging.StreamHandler()]
+    # format and handler
     if args.logfile:
-        lh = logging.FileHandler(args.logfile)
-        lh.setFormatter(logging.Formatter("%(asctime)s [%(name)s] [%(levelname)-5.5s]  %(message)s"))
-        handlers.append(lh)
-    logging.basicConfig(level=log_level, handlers=handlers)
+        logHandler = logging.FileHandler(args.logfile)
+        logHandler.setFormatter(logging.Formatter("%(asctime)s [%(name)s] [%(levelname)-5.5s]  %(message)s"))
+    else:
+        logHandler = logging.NullHandler()
+    logging.basicConfig(level=log_level, handlers=logHandler)
 
     # initialise logger and log basics
     log = logging.getLogger('main')
@@ -88,7 +88,9 @@ def main() -> int:
         try:
             return kcheck.checker.check_config(args)
         except DuplicateOptionError:
-            print('Your config file has duplicate keys in a section. See the log file (if configured) for more detail.')
+            print('Your config file has duplicate keys in a section.')
+            if args.logfile:
+                print('See the log file %s for more details' % args.logfile)
             print('Correct your config file and try running this again.')
             return 2
 
