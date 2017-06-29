@@ -86,7 +86,7 @@ def main() -> int:
         import kcheck.checker
 
         try:
-            return kcheck.checker.check_config(args)
+            return kcheck.checker.check_config(args.config, args.kernel)
         except DuplicateOptionError:
             print('Your config file has duplicate keys in a section.')
             if args.logfile:

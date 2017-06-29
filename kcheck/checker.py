@@ -4,24 +4,25 @@
 Check required kernel configuration items.
 """
 
-import configargparse
 import configparser
 import logging
 
 log = logging.getLogger('checker')
 
 
-def check_config(args: configargparse.Namespace) -> int:
+def check_config(kcheck_config: str, kernel_config: str) -> int:
     """
     Entry point for command line utility.
 
-    :param args: configargparse.Namespace from command line utility
+    :param kcheck_config: path to kcheck config with required kernel symbols
+    :param kernel_config: path to kernel .config or config.gz to check
     :return: return value for command line utility
     """
-    assert isinstance(args, configargparse.Namespace)
+    assert isinstance(kcheck_config, str)
+    assert isinstance(kernel_config, str)
     log.debug('Module loaded - beginning kernel configuration check')
 
-    symbols = load_required_symbols(args.config)
+    symbols = load_required_symbols(kcheck_config)
     # TODO: put stuff here
     return 0
 
