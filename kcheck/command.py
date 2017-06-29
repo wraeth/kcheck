@@ -11,11 +11,14 @@ def main() -> int:
 
     :return: integer for return code of command line
     """
+
     import argparse
     import importlib
-    import kcheck
     import logging
+    import platform
     import sys
+
+    import kcheck
 
     parser = argparse.ArgumentParser(description='Kernel configuration check utility')
     parser.add_argument('-c', '--config', help='kcheck config file', default='/etc/kcheck.conf')
@@ -38,7 +41,7 @@ def main() -> int:
     log = logging.getLogger('main')
 
     if args.version:
-        print('kcheck', kcheck.__version__)
+        print('kcheck %s (Python %s)' % (kcheck.__version__, platform.python_version()))
         return 0
 
     if 'mode' in args:
