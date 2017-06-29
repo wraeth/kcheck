@@ -17,6 +17,8 @@ def main() -> int:
     import logging
     import platform
 
+    from configparser import DuplicateOptionError
+
     import kcheck
 
     parser = configargparse.ArgumentParser(
@@ -82,7 +84,13 @@ def main() -> int:
     else:
         # no "mode", so run kcheck
         import kcheck.checker
-        return kcheck.checker.check_config(args)
+
+        try:
+            return kcheck.checker.check_config(args)
+        except DuplicateOptionError:
+            print('Your config file has duplicate keys in a section. See the log file (if configured) for more detail.')
+            print('Correct your config file and try running this again.')
+            return 2
 
 if __name__ == '__main__':
     main()
