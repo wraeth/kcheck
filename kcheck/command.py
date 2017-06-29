@@ -51,7 +51,7 @@ def main() -> int:
         logHandler.setFormatter(logging.Formatter("%(asctime)s [%(name)s] [%(levelname)-5.5s]  %(message)s"))
     else:
         logHandler = logging.NullHandler()
-    logging.basicConfig(level=log_level, handlers=logHandler)
+    logging.basicConfig(level=log_level, handlers=[logHandler])
 
     # initialise logger and log basics
     log = logging.getLogger('main')
