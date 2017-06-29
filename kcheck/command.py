@@ -22,6 +22,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description='Kernel configuration check utility')
     parser.add_argument('-c', '--config', help='kcheck config file', default='/etc/kcheck.conf')
     parser.add_argument('-k', '--kernel', help='kernel config file', default='/usr/src/linux/.config')
+    parser.add_argument('-l', '--logfile', help='file to write logging into')
     parser.add_argument('-v', '--verbose', help='Output extra information', action='count', default=2)
     parser.add_argument('-V', '--version', help='Print version information and exit', action='store_true')
 
@@ -34,10 +35,22 @@ def main() -> int:
     
     args = parser.parse_args()
 
-    # set up logging
+    ## set up logging ##
+    # logging output level
     log_level = 50 - (args.verbose * 10)
-    logging.basicConfig(level=log_level)
+
+    # format and handlers
+    handlers = [logging.StreamHandler()]
+    if args.logfile:
+        lh = logging.FileHandler(args.logfile)
+        lh.setFormatter(logging.Formatter("%(asctime)s [%(name)s] [%(levelname)-5.5s]  %(message)s"))
+        handlers.append(lh)
+    logging.basicConfig(level=log_level, handlers=handlers)
+
+    # initialise logger and log basics
     log = logging.getLogger('main')
+    log.info('kcheck %s' % kcheck.__version__)
+    log.debug('Called with arguments: %s' % str(args._get_kwargs()))
 
     if args.version:
         print('kcheck %s (Python %s)' % (kcheck.__version__, platform.python_version()))
@@ -55,8 +68,9 @@ def main() -> int:
             log.debug('Loading module %s' % module)
             try:
                 package_manager = importlib.import_module(module)
-            except ImportError:
+            except ImportError as exception:
                 log.critical("Unable to load module for package manager %s" % module)
+                log.exception(exception)
                 return 1
 
             return package_manager.generate_config(args)
