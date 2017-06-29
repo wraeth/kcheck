@@ -22,6 +22,8 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
     assert isinstance(kernel_config, str)
     log.debug('Module loaded - beginning kernel configuration check')
 
+    print('Reading symbols...')
+
     required_symbols = load_required_symbols(kcheck_config)
     kernel_symbols = read_kernel_config(kernel_config)
     # TODO: put stuff here
@@ -85,6 +87,7 @@ def load_required_symbols(config_file: str) -> dict:
             symbols[sym_name] = value
 
     log.info('Loaded %d kernel symbols to check' % len(symbols.keys()))
+    print('%d required symbols loaded from config' % len(symbols.keys()))
     return symbols
 
 
@@ -144,4 +147,5 @@ def read_kernel_config(kernel_config: str) -> dict:
     fh.close()
 
     log.info('Read %d symbols from kernel config' % len(symbols.keys()))
+    print('%d kernel symbols loaded from %s' % (len(symbols.keys()), kernel_config))
     return symbols
