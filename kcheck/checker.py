@@ -8,6 +8,7 @@ import configparser
 import logging
 
 log = logging.getLogger('checker')
+_verbose = False  # this will get updated by command.py when called
 
 
 def check_config(kcheck_config: str, kernel_config: str) -> int:
@@ -22,7 +23,7 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
     assert isinstance(kernel_config, str)
     log.debug('Module loaded - beginning kernel configuration check')
 
-    print('Reading symbols...')
+    verbose_print('Reading symbols...')
 
     required_symbols = load_required_symbols(kcheck_config)
     kernel_symbols = read_kernel_config(kernel_config)
@@ -31,6 +32,8 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
     missing_symbols = []
 
     log.info('Comparing required kernel symbols')
+
+    verbose_print()
 
     for req_sym in required_symbols.keys():
         req_val = required_symbols[req_sym]
@@ -44,6 +47,7 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
 
         if cur_val in req_val:
             log.info('%s within allowed values' % req_sym)
+            verbose_print('%s matches allowed value(s)' % req_sym)
             continue
         else:
             log.warning('%s does not match value %s' % (req_sym, str(req_val)))
@@ -53,18 +57,18 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
     log.info('%d keys with incorrect values' % len(incorrect_symbols.keys()))
     log.info('%d keys not found in kernel config' % len(missing_symbols))
 
+    verbose_print()
     if len(incorrect_symbols.keys()) > 0:
-        print()
         print('The following config symbols have incorrect values:')
         for key in incorrect_symbols.keys():
             cur, req = incorrect_symbols[key]
             print('    %s set to %s when it should be %s' % (key, cur, req))
-    else:
         print()
+    else:
         print('No required symbols have incorrect values!')
+        print()
 
     if len(missing_symbols) > 0:
-        print()
         print('The following required keys were not found in the kernel config:')
         for key in missing_symbols:
             print('    %s' % key)
@@ -129,7 +133,7 @@ def load_required_symbols(config_file: str) -> dict:
             symbols[sym_name] = value
 
     log.info('Loaded %d kernel symbols to check' % len(symbols.keys()))
-    print('%d required symbols loaded from config' % len(symbols.keys()))
+    verbose_print('%d required symbols loaded from config' % len(symbols.keys()))
     return symbols
 
 
@@ -189,5 +193,17 @@ def read_kernel_config(kernel_config: str) -> dict:
     fh.close()
 
     log.info('Read %d symbols from kernel config' % len(symbols.keys()))
-    print('%d kernel symbols loaded from %s' % (len(symbols.keys()), kernel_config))
+    verbose_print('%d kernel symbols loaded from %s' % (len(symbols.keys()), kernel_config))
     return symbols
+
+
+def verbose_print(msg: str = '') -> None:
+    """
+    Helper for printing messages when --verbose.
+
+    :param msg: Message to print
+    :return: None
+    """
+    assert isinstance(msg, str)
+    if _verbose:
+        print(msg)

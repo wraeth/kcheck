@@ -31,7 +31,7 @@ def main() -> int:
     parser.add_argument('--kernel', '-k', help='kernel config file', default='/usr/src/linux/.config')
     parser.add_argument('--logfile', '-l', help='file to write logging into')
     parser.add_argument('--debug', '-d', help='increase log verbosity (repeatable)', action='count', default=2)
-    parser.add_argument('--verbose', '-v', help='Output extra information', action='count', default=2)
+    parser.add_argument('--verbose', '-v', help='Output extra information', action='store_true')
     parser.add_argument('--version', '-V', help='Print version information and exit', action='store_true')
 
     # subparsers = parser.add_subparsers(help='commands')
@@ -86,6 +86,7 @@ def main() -> int:
     else:
         # no "mode", so run kcheck
         import kcheck.checker
+        kcheck.checker._verbose = args.verbose
 
         try:
             return kcheck.checker.check_config(args.config, args.kernel)
