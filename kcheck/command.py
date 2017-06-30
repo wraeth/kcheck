@@ -30,6 +30,7 @@ def main() -> int:
     parser.add_argument('--config', '-c', is_config_file=True, required=True, help='kcheck config file')
     parser.add_argument('--kernel', '-k', help='kernel config file', default='/usr/src/linux/.config')
     parser.add_argument('--logfile', '-l', help='file to write logging into')
+    parser.add_argument('--debug', '-d', help='increase log verbosity (repeatable)', action='count', default=2)
     parser.add_argument('--verbose', '-v', help='Output extra information', action='count', default=2)
     parser.add_argument('--version', '-V', help='Print version information and exit', action='store_true')
 
@@ -44,7 +45,7 @@ def main() -> int:
 
     ## set up logging ##
     # logging output level
-    log_level = 50 - (args.verbose * 10)
+    log_level = 50 - (args.debug * 10)
 
     # format and handler
     if args.logfile:
