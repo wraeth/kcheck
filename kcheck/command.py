@@ -14,15 +14,18 @@ def main() -> int:
 
     import configargparse
     import logging
+    import os
     import platform
 
     from configparser import DuplicateOptionError
 
     import kcheck
 
+    __default_config = '/etc/kcheck.conf'
+
     parser = configargparse.ArgumentParser(
         add_config_file_help=True,
-        default_config_files=['/etc/kcheck.conf'],
+        default_config_files=[__default_config],
         ignore_unknown_config_file_keys=True,
         formatter_class=lambda prog: configargparse.HelpFormatter(prog,max_help_position=35)
     )
@@ -55,6 +58,15 @@ def main() -> int:
     if args.version:
         print('kcheck %s (Python %s)' % (kcheck.__version__, platform.python_version()))
         return 0
+
+    # Warn if there's no config file
+    if not args.config:
+        args.config = __default_config
+    if not os.path.exists(args.config):
+        log.warning('No config file found!')
+        print('Warning: No configuration file found. Running this utility without a config is useless.')
+        print('         Please create a config file at %r, or specify one with `--config [PATH]`' % __default_config)
+        return -3
 
     # will check for args.mode here when other functions added
     import kcheck.checker
