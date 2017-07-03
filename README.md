@@ -122,6 +122,10 @@ The following config symbols have incorrect values:
 
 ## Future
 
-I hope to introduce some level of integration into (some) package managers such that required kernel symbols as
-specified by installed packages can be automatically recorded into the config file. This, however, will likely be met
-with varying levels of success, depending on the way package managers list kernel configuration requirements.
+ - More readable output
+ - Better portage integration
+   - eg. symbols set in variables before calling helpers
+ - Investigate/implement other PM integration (paludis?)
+ - Hardware detection similar to the [Debian HCL
+   list](http://kmuto.jp/debian/hcl/)
+
