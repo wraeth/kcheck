@@ -19,7 +19,6 @@ HOMEPAGE="https://github.com/wraeth/kcheck"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
 
 DEPEND="${PYTHON_DEPS}
 	dev-python/setuptools[${PYTHON_USEDEP}]"
