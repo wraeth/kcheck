@@ -16,3 +16,6 @@ __version__ = "0.0.1"
 ALLOWED_PKGMGR = [
     'portage'
 ]
+MGR_MODULE = {
+    'portage': 'pm_portage'
+}

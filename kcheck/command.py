@@ -13,6 +13,7 @@ def main() -> int:
     """
 
     import configargparse
+    import importlib
     import logging
     import os
     import platform
@@ -35,6 +36,14 @@ def main() -> int:
     parser.add_argument('--debug', '-d', help='increase log verbosity (repeatable)', action='count', default=2)
     parser.add_argument('--verbose', '-v', help='Output extra information', action='store_true')
     parser.add_argument('--version', '-V', help='Print version information and exit', action='store_true')
+
+    subparsers = parser.add_subparsers(help='commands')
+
+    gen_parser = subparsers.add_parser('genconfig', help='Generate config requirements from installed packages')
+    gen_parser.add_argument('-l', '--list', help='list available package manager integrations', action='store_true')
+    gen_parser.add_argument('-m', '--manager', help='Package manager', choices=kcheck.ALLOWED_PKGMGR, default='portage')
+    gen_parser.add_argument('-o', '--output', help='Where to save symbols if not pre-existing config', required=True)
+    gen_parser.set_defaults(mode='genconfig')
 
     args = parser.parse_args()
 
@@ -62,24 +71,46 @@ def main() -> int:
     # Warn if there's no config file
     if not args.config:
         args.config = __default_config
-    if not os.path.exists(args.config):
+    if not os.path.exists(args.config) and not args.mode:
         log.warning('No config file found!')
         print('Warning: No configuration file found. Running this utility without a config is useless.')
         print('         Please create a config file at %r, or specify one with `--config [PATH]`' % __default_config)
         return -3
 
-    # will check for args.mode here when other functions added
-    import kcheck.checker
-    kcheck.checker._verbose = args.verbose
+    # check for args.mode and call either checker or PM generator
+    if 'mode' in args:
+        if args.mode == 'genconfig':
+            if args.list:
+                print('The following package managers can be used for generating required kernel configurations')
+                [print('   ', p) for p in kcheck.ALLOWED_PKGMGR]
+                return 0
 
-    try:
-        return kcheck.checker.check_config(args.config, args.kernel)
-    except DuplicateOptionError:
-        print('Your config file has duplicate keys in a section.')
-        if args.logfile:
-            print('See the log file %s for more details' % args.logfile)
-        print('Correct your config file and try running this again.')
-        return -2
+            # get the module name for the package manager, import and hand over
+            module = 'kcheck.'+kcheck.MGR_MODULE[args.manager]
+            log.debug('Loading module %s' % module)
+            try:
+                package_manager = importlib.import_module(module)
+            except ImportError as exception:
+                log.critical("Unable to load module for package manager %s" % module)
+                log.exception(exception)
+                return -1
+
+            package_manager._verbose = args.verbose
+            return package_manager.generate_config(args.config, args.output)
+
+    else:
+        # no "mode", so run kcheck
+        import kcheck.checker
+        kcheck.checker._verbose = args.verbose
+
+        try:
+            return kcheck.checker.check_config(args.config, args.kernel)
+        except DuplicateOptionError:
+            print('Your config file has duplicate keys in a section.')
+            if args.logfile:
+                print('See the log file %s for more details' % args.logfile)
+            print('Correct your config file and try running this again.')
+            return -2
 
 if __name__ == '__main__':
     exit(main())
