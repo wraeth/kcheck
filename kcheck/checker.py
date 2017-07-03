@@ -129,7 +129,7 @@ def load_required_symbols(config_file: str) -> dict:
             # to retain format, this is encased in list
             value = [config['string'][key]]
 
-            log.debug('Got symbol {!s} with value {!r}'.format(sym_name, value))
+            log.debug('Got symbol %s with value %r' % (sym_name, value))
             symbols[sym_name] = value
 
     log.info('Loaded %d kernel symbols to check' % len(symbols.keys()))
@@ -160,7 +160,7 @@ def read_kernel_config(kernel_config: str) -> dict:
         log.debug('Opening kernel config')
         fh = myopen(kernel_config, mode=mode)
     except FileNotFoundError as err:
-        log.critical('The kernel configuration file "%s" was not found!' % kernel_config)
+        log.critical('The kernel configuration file %r was not found!' % kernel_config)
         log.exception(err)
         raise
 
@@ -187,7 +187,7 @@ def read_kernel_config(kernel_config: str) -> dict:
         assert isinstance(sym, str)
         assert isinstance(value, str)
 
-        log.debug('Got symbol %s with value "%s"' % (sym, value))
+        log.debug('Got symbol %s with value %r' % (sym, value))
         symbols[sym] = value
 
     fh.close()
