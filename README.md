@@ -22,21 +22,9 @@ cd kcheck-0.0.1
 ```
 
 Note that, by default, the configuration file may get installed to `/usr/etc/kcheck.conf`. This will need to be moved to
-`/etc/kcheck.conf`, or you can specify the config file path with `--config`.
+`/etc/kcheck.conf`, or you can specify the config file path at runtime with `kcheck --config /path/to/config ...`.
 
 See `./setup.py --help` for other options.
-
-### Using the ebuild
-
-Alternatively, on Gentoo or it's derivatives, you can use the provided ebuild to install the package through your package manager. Simply download the `kcheck-9999.ebuild` file into the desired category/package directory (eg. `sys-apps/kcheck`) in a [local overlay](https://wiki.gentoo.org/wiki/Custom_repository) and rename it to the version you want (eg `kcheck-9999.ebuild` -> `kcheck-0.0.1.ebuild`). This should result in a file such as `${REPO_ROOT}/sys-apps/kcheck/kcheck-0.0.1.ebuild`.
-
-Once downloaded, `cd` into the directory and run `repoman manifest` to generate the required `Manifest` file. After that you should be able to install it using the normal method of your package manager:
-
-```
-emerge -a sys-apps/kcheck
-```
-
-Note that you may need to add it to `package.accept_keywords` if you're on stable or are using the live (version `9999` ebuild).
 
 ## Usage
 
