@@ -47,6 +47,10 @@ def main() -> int:
 
     args = parser.parse_args()
 
+    if args.version:
+        print('kcheck %s (Python %s)' % (kcheck.__version__, platform.python_version()))
+        return 0
+
     ## set up logging ##
     # logging output level
     log_level = 50 - (args.debug * 10)
@@ -67,10 +71,6 @@ def main() -> int:
     except PermissionError as err:
         print('Error: unable to write log file: %s' % err.strerror)
         return -4
-
-    if args.version:
-        print('kcheck %s (Python %s)' % (kcheck.__version__, platform.python_version()))
-        return 0
 
     # Warn if there's no config file
     if not args.config:
