@@ -42,7 +42,7 @@ def main() -> int:
     gen_parser = subparsers.add_parser('genconfig', help='Generate config requirements from installed packages')
     gen_parser.add_argument('-l', '--list', help='list available package manager integrations', action='store_true')
     gen_parser.add_argument('-m', '--manager', help='Package manager', choices=kcheck.ALLOWED_PKGMGR, default='portage')
-    gen_parser.add_argument('-o', '--output', help='Where to save symbols if not pre-existing config', required=True)
+    gen_parser.add_argument('-o', '--output', help='Path to generate new config', required=True)
     gen_parser.set_defaults(mode='genconfig')
 
     args = parser.parse_args()
