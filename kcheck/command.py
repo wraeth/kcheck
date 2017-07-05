@@ -60,9 +60,13 @@ def main() -> int:
     logging.basicConfig(level=log_level, handlers=[logHandler])
 
     # initialise logger and log basics
-    log = logging.getLogger('main')
-    log.info('kcheck %s' % kcheck.__version__)
-    [log.debug(line) for line in parser.format_values().splitlines()]
+    try:
+        log = logging.getLogger('main')
+        log.info('kcheck %s' % kcheck.__version__)
+        [log.debug(line) for line in parser.format_values().splitlines()]
+    except PermissionError as err:
+        print('Error: unable to write log file: %s' % err.strerror)
+        return -4
 
     if args.version:
         print('kcheck %s (Python %s)' % (kcheck.__version__, platform.python_version()))
