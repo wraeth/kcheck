@@ -8,11 +8,11 @@ import re
 from collections import OrderedDict
 
 import portage
+from kcheck.helpers import *
 
 log = logging.getLogger('portage')
 re_sym = re.compile('^.*\s(linux_chkconfig_\w+)\s+([A-Za-z0-9_]*).*$')
 _add_to_config = True
-_verbose = False
 
 
 def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
@@ -135,18 +135,6 @@ def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
 
     # return with how many failed reads we go (the only really significant error count here)
     return errors
-
-
-def verbose_print(msg: str = '') -> None:
-    """
-    Helper for printing messages when --verbose.
-
-    :param msg: Message to print
-    :return: None
-    """
-    assert isinstance(msg, str)
-    if _verbose:
-        print(msg)
 
 
 if __name__ == '__main__':

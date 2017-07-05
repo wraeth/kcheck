@@ -7,8 +7,9 @@ Check required kernel configuration items.
 import configparser
 import logging
 
+from kcheck.helpers import *
+
 log = logging.getLogger('checker')
-_verbose = False  # this will get updated by command.py when called
 
 
 def check_config(kcheck_config: str, kernel_config: str) -> int:
@@ -195,15 +196,3 @@ def read_kernel_config(kernel_config: str) -> dict:
     log.info('Read %d symbols from kernel config' % len(symbols.keys()))
     verbose_print('%d kernel symbols loaded from %s' % (len(symbols.keys()), kernel_config))
     return symbols
-
-
-def verbose_print(msg: str = '') -> None:
-    """
-    Helper for printing messages when --verbose.
-
-    :param msg: Message to print
-    :return: None
-    """
-    assert isinstance(msg, str)
-    if _verbose:
-        print(msg)
