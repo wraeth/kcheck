@@ -11,8 +11,13 @@ A python utility for recording required kernel symbols and checking .config file
 
 ## Installation
 
-While installing through your distributions package manager would be preferable, you can also simply download, unpack,
-and install with setuptools:
+Installing through your distributions package manager is preferred. At present, this only includes Gentoo:
+
+`emerge -a sys-apps/kcheck`
+
+Note: if you're a downstream maintainer and have made kcheck available in your distributions repository, please [let me know](mailto:kcheck@wraeth.id.au).
+
+Otherwise, you can also simply download, unpack, and install with setuptools:
 
 ```
 wget https://github.com/wraeth/kcheck/archive/0.0.1.tar.gz -O kcheck-0.0.1.tar.gz
