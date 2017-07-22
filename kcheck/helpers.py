@@ -15,35 +15,31 @@ class Colour:
     end = '\033[0m'
 
 
-def green(msg: str) -> str:
-    assert isinstance(msg, str)
-    formatted = msg
+def green(msg) -> str:
+    formatted = str(msg)
     if __coloured:
-        formatted = Colour.green+msg+Colour.end
+        formatted = Colour.green + formatted + Colour.end
     return formatted
 
 
-def yellow(msg: str) -> str:
-    assert isinstance(msg, str)
-    formatted = msg
+def yellow(msg) -> str:
+    formatted = str(msg)
     if __coloured:
-        formatted = Colour.yellow + msg + Colour.end
+        formatted = Colour.yellow + formatted + Colour.end
     return formatted
 
 
-def red(msg: str) -> str:
-    assert isinstance(msg, str)
-    formatted = msg
+def red(msg) -> str:
+    formatted = str(msg)
     if __coloured:
-        formatted = Colour.red + msg + Colour.end
+        formatted = Colour.red + formatted + Colour.end
     return formatted
 
 
-def bold(msg: str) -> str:
-    assert isinstance(msg, str)
-    formatted = msg
+def bold(msg) -> str:
+    formatted = str(msg)
     if __coloured:
-        formatted = Colour.bold + msg + Colour.end
+        formatted = Colour.bold + formatted + Colour.end
     return formatted
 
 

@@ -123,7 +123,7 @@ def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
         symbol_count += esymbols
         errors += eerrors
 
-    verbose_print('Got %s symbols and %s errors from %s ebuilds' % (bold(str(symbol_count)), yellow(str(errors)), green(str(len(ebuild_paths)))))
+    verbose_print('Got %s symbols and %s errors from %s ebuilds' % (bold(symbol_count), yellow(errors), green(len(ebuild_paths))))
 
     # write out (if necessary)
     if _add_to_config:
@@ -131,7 +131,7 @@ def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
         with open(outputfile, 'w') as fh:
             config.write(fh)
         log.debug('Config file written')
-        print('%s discovered required symbol(s) written to %s.' % (bold(str(symbol_count)), green(outputfile)))
+        print('%s discovered required symbol(s) written to %s.' % (bold(symbol_count), green(outputfile)))
 
     # return with how many failed reads we go (the only really significant error count here)
     return errors
