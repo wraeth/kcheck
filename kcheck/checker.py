@@ -7,8 +7,9 @@ Check required kernel configuration items.
 import configparser
 import logging
 
+from kcheck.helpers import *
+
 log = logging.getLogger('checker')
-_verbose = False  # this will get updated by command.py when called
 
 
 def check_config(kcheck_config: str, kernel_config: str) -> int:
@@ -47,10 +48,10 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
 
         if cur_val in req_val:
             log.info('%s within allowed values' % req_sym)
-            verbose_print('%s matches allowed value(s)' % req_sym)
+            verbose_print('%s matches allowed value(s)' % bold(req_sym))
             continue
         else:
-            log.warning('%s does not match value %s' % (req_sym, str(req_val)))
+            log.warning('%s does not match value %s' % (bold(req_sym), yellow(req_val)))
             incorrect_symbols[req_sym] = [cur_val, req_val]
             continue
 
@@ -62,16 +63,16 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
         print('The following config symbols have incorrect values:')
         for key in incorrect_symbols.keys():
             cur, req = incorrect_symbols[key]
-            print('    %s set to %s when it should be %s' % (key, cur, req))
+            print('    %s set to %s when it should be %s' % (yellow(key), red(cur), green(req)))
         print()
     else:
-        print('No required symbols have incorrect values!')
+        print(green('No required symbols have incorrect values!'))
         print()
 
     if len(missing_symbols) > 0:
         print('The following required keys were not found in the kernel config:')
         for key in missing_symbols:
-            print('    %s' % key)
+            print('    %s' % bold(key))
 
     return len(incorrect_symbols.keys()) + len(missing_symbols)
 
@@ -195,15 +196,3 @@ def read_kernel_config(kernel_config: str) -> dict:
     log.info('Read %d symbols from kernel config' % len(symbols.keys()))
     verbose_print('%d kernel symbols loaded from %s' % (len(symbols.keys()), kernel_config))
     return symbols
-
-
-def verbose_print(msg: str = '') -> None:
-    """
-    Helper for printing messages when --verbose.
-
-    :param msg: Message to print
-    :return: None
-    """
-    assert isinstance(msg, str)
-    if _verbose:
-        print(msg)

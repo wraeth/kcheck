@@ -21,6 +21,7 @@ def main() -> int:
     from configparser import DuplicateOptionError
 
     import kcheck
+    import kcheck.helpers
 
     __default_config = '/etc/kcheck.conf'
 
@@ -36,6 +37,7 @@ def main() -> int:
     parser.add_argument('--debug', '-d', help='increase log verbosity (repeatable)', action='count', default=2)
     parser.add_argument('--verbose', '-v', help='Output extra information', action='store_true')
     parser.add_argument('--version', '-V', help='Print version information and exit', action='store_true')
+    parser.add_argument('--nocolour', '-C', help='Disable colour', action='store_false')
 
     subparsers = parser.add_subparsers(help='commands')
 
@@ -81,6 +83,9 @@ def main() -> int:
         print('         Please create a config file at %r, or specify one with `--config [PATH]`' % __default_config)
         return -3
 
+    kcheck.helpers.__verbose = args.verbose
+    kcheck.helpers.__coloured = args.nocolour
+
     # check for args.mode and call either checker or PM generator
     if 'mode' in args:
         if args.mode == 'genconfig':
@@ -99,13 +104,11 @@ def main() -> int:
                 log.exception(exception)
                 return -1
 
-            package_manager._verbose = args.verbose
             return package_manager.generate_config(args.config, args.output)
 
     else:
         # no "mode", so run kcheck
         import kcheck.checker
-        kcheck.checker._verbose = args.verbose
 
         try:
             return kcheck.checker.check_config(args.config, args.kernel)
