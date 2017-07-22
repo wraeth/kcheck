@@ -88,7 +88,7 @@ def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
             # check if symbol already found, warn if so
             if symbol in symbols:
                 log.warning('Additional instance of symbol %s found with value %s' % (symbol, mode))
-                verbose_print('Found additional instance of %s - only the first will be used' % symbol)
+                verbose_print('Found additional instance of %s - only the first will be used' % bold(symbol))
                 continue
             log.debug('Got symbol %s using %s (%s)' % (symbol, checker, mode))
 
@@ -97,7 +97,7 @@ def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
                 notused = master_config['ternary'][symbol]
                 # no exception, so it already exists
                 log.warning('Symbol %s found in master config - skipping' % symbol)
-                verbose_print('Symbol %s already in config' % symbol)
+                verbose_print('Symbol %s already in config' % bold(symbol))
                 del notused
                 continue
             except KeyError:
@@ -117,13 +117,13 @@ def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
                 source = os.path.basename(ebuild)
                 config.set('ternary', '; from %s' % source)
                 config.set('ternary', symbol, mode)
-            verbose_print('  Got symbol %s using %s (%s)' % (symbol, checker, mode))
+            verbose_print('  Got symbol %s using %s (%s)' % (bold(symbol), checker, yellow(mode)))
 
         log.info('Got %d symbols and %d errors from ebuild' % (esymbols, eerrors))
         symbol_count += esymbols
         errors += eerrors
 
-    verbose_print('Got %d symbols and %d errors from %d ebuilds' % (symbol_count, errors, len(ebuild_paths)))
+    verbose_print('Got %s symbols and %s errors from %s ebuilds' % (bold(str(symbol_count)), yellow(str(errors)), green(str(len(ebuild_paths)))))
 
     # write out (if necessary)
     if _add_to_config:
@@ -131,7 +131,7 @@ def generate_config(kcheck_config: str, outputfile: str = 'kcheck.conf') -> int:
         with open(outputfile, 'w') as fh:
             config.write(fh)
         log.debug('Config file written')
-        print('%d discovered required symbol(s) written to %s.' % (symbol_count, outputfile))
+        print('%s discovered required symbol(s) written to %s.' % (bold(str(symbol_count)), green(outputfile)))
 
     # return with how many failed reads we go (the only really significant error count here)
     return errors

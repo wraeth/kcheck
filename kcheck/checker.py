@@ -48,10 +48,10 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
 
         if cur_val in req_val:
             log.info('%s within allowed values' % req_sym)
-            verbose_print('%s matches allowed value(s)' % req_sym)
+            verbose_print('%s matches allowed value(s)' % bold(req_sym))
             continue
         else:
-            log.warning('%s does not match value %s' % (req_sym, str(req_val)))
+            log.warning('%s does not match value %s' % (bold(req_sym), yellow(str(req_val))))
             incorrect_symbols[req_sym] = [cur_val, req_val]
             continue
 
@@ -63,16 +63,16 @@ def check_config(kcheck_config: str, kernel_config: str) -> int:
         print('The following config symbols have incorrect values:')
         for key in incorrect_symbols.keys():
             cur, req = incorrect_symbols[key]
-            print('    %s set to %s when it should be %s' % (key, cur, req))
+            print('    %s set to %s when it should be %s' % (yellow(key), red(cur), green(str(req))))
         print()
     else:
-        print('No required symbols have incorrect values!')
+        print(green('No required symbols have incorrect values!'))
         print()
 
     if len(missing_symbols) > 0:
         print('The following required keys were not found in the kernel config:')
         for key in missing_symbols:
-            print('    %s' % key)
+            print('    %s' % bold(key))
 
     return len(incorrect_symbols.keys()) + len(missing_symbols)
 
