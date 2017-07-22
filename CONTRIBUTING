@@ -1,0 +1,35 @@
+# Contributing to kcheck #
+
+As someone with a seemingly never-ending demand on limited time resources, I
+welcome any and all contributions to this project. Whether it's in the form of
+feature suggestions, code improvements, or problem cases, help me make Linux
+kernel configuration somewhat less onerous.
+
+## Issues and features ##
+
+_Every program can be reduced by one line of code, and every program has at
+least one bug. Therefore, every program can be reduced to one line of code that
+doesn't work._
+
+If you come across a bug or use-case that behaves differently than it should,
+please file an [issue](https://github.com/wraeth/kcheck/issues) with a
+description and, if applicable, the stack trace or debug log attached.
+Similarly, feature-requests should be logged as issues to be tagged and tracked
+as such.
+
+## Pull requests ##
+
+Pull requests for code improvements, bug fixes and new features are generally
+welcome, however please note that atomic, GPG-signed commits are preferred. See
+[the git website](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
+for how to configure git to do this and
+[Github's instructions](https://help.github.com/articles/adding-a-new-gpg-key-to-your-github-account/)
+for verifying commits signed with your GPG key.
+
+## Contact ##
+
+If you need to contact me regarding kcheck outside of Github - for example, if
+you don't want your name blasted all over the Internet - you can do so via
+[mail](mailto:kcheck@wraeth.id.au), or I can be found under the same nick on
+the [Freenode IRC network](https://webchat.freenode.net/). Comments,
+suggestions, issues and patches welcome.
